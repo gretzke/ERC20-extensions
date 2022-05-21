@@ -3,25 +3,20 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/extensions/draft-IERC20Permit.sol";
 import "./Staking.sol";
+import "../../interfaces/IStakingPermit.sol";
 
-/// @notice see Staking.sol
-/// @dev adds support for depositing tokens with permit if underlying token supports EIP2612
-contract StakingPermit is Staking {
+contract StakingPermit is IStakingPermit, Staking {
     constructor(
         string memory name,
         string memory symbol,
         address underlyingToken
     ) Staking(name, symbol, underlyingToken) {}
 
-    /// @notice allows to deposit tokens without an approve transaction by using the EIP2612 permit standard
-    /// @param amount amount of underlying token to deposit
-    /// @param deadline until the signature is valid
-    /// @param signature permit signature
     function depositWithPermit(
         uint256 amount,
         uint256 deadline,
         bytes memory signature
-    ) external {
+    ) external returns (uint256) {
         require(signature.length == 65);
         bytes32 r;
         bytes32 s;
@@ -34,6 +29,6 @@ contract StakingPermit is Staking {
         }
 
         IERC20Permit(address(token)).permit(_msgSender(), address(this), type(uint256).max, deadline, v, r, s);
-        deposit(amount);
+        return deposit(amount);
     }
 }

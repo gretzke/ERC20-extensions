@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "../../interfaces/IVestedToken.sol";
 
 struct VestingPeriod {
     uint256 cliffTimestamp;
@@ -14,24 +15,12 @@ struct VestedBalance {
     uint256 amount; // in wei
 }
 
-/// @title Vesting functionality for ERC20 tokens
-/// @author Daniel Gretzke
-/// @notice allows to set up multiple vesting schedules for token holders supporting a cliff + vesting schedule
-/// @notice if an account is vested the smart contract ensures that the account has a minimum balance according to the vesting schedule, sending more tokens reverts the transaction
-/// @notice every vesting schedule has a dedicated vesting admin, if this admin transfers tokens to an account, the vesting schedule is set up for the amount of sent tokens automatically
-/// @dev setting the cliff amount to n% unlocks n% of tokens after the cliff timestamp, 100% - n% of tokens are unlocked gradually over the `duration`
-/// @dev setting the cliff timestamp to the current timestamp starts the vesting period immediately
-/// @dev setting duration to zero will unlock the full amount after the cliff timestamp
-abstract contract VestedToken is ERC20 {
+abstract contract VestedToken is IVestedToken, ERC20 {
     uint256 private _vestingCounter;
-    mapping(uint256 => VestingPeriod) public vestingPeriods;
+    mapping(uint256 => VestingPeriod) public override vestingPeriods;
+    mapping(address => VestedBalance) public override vestedBalances;
     mapping(address => uint256) public vestingAdmins;
-    mapping(address => VestedBalance) public vestedBalances;
 
-    event VestingScheduleAdded(uint256 indexed vestingId, uint256 cliff, uint256 cliffAmount, uint256 duration);
-    event VestedTokens(uint256 indexed vestingId, address indexed account, uint256 amount);
-
-    /// @notice calculates the amount of locked tokens (minimum balance) for a given account
     function lockedTokens(address account) public view returns (uint256) {
         VestedBalance storage vestingBalance = vestedBalances[account];
         uint256 id = vestingBalance.vestingId;
@@ -75,7 +64,7 @@ abstract contract VestedToken is ERC20 {
             require(vestingBalance.vestingId == 0, "USER_ALREADY_VESTED");
             vestingBalance.vestingId = id;
             vestingBalance.amount = amount;
-            emit VestedTokens(id, to, amount);
+            emit TokensVested(id, to, amount);
         } else {
             require(balanceOf(from) >= lockedTokens(from), "TOKENS_VESTED");
         }

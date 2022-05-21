@@ -2,15 +2,10 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-
 import {SafeMathInt, SafeMathUint} from "../lib/SafeMath.sol";
+import "../../interfaces/IStaking.sol";
 
-/// @title Staking contract for ERC20 tokens
-/// @author Daniel Gretzke
-/// @notice Allows users to stake an underlying ERC20 token and receive a new ERC20 token in return which tracks their stake in the pool
-/// @notice Rewards in form of the underlying ERC20 token are distributed proportionally across all staking participants
-/// @notice Rewards in ETH are distributed proportionally across all staking participants
-contract Staking is ERC20 {
+contract Staking is ERC20, IStaking {
     using SafeMathUint for uint256;
     using SafeMathInt for int256;
 
@@ -22,11 +17,6 @@ contract Staking is ERC20 {
     uint256 private _magnifiedRewardPerShare;
     mapping(address => int256) private _magnifiedRewardCorrections;
     mapping(address => uint256) public claimedRewards;
-
-    event RewardsReceived(address indexed from, uint256 amount);
-    event Deposit(address indexed user, uint256 underlyingToken, uint256 overlyingToken);
-    event Withdraw(address indexed user, uint256 underlyingToken, uint256 overlyingToken);
-    event RewardClaimed(address indexed user, address indexed to, uint256 amount);
 
     constructor(
         string memory name,
@@ -46,10 +36,7 @@ contract Staking is ERC20 {
         }
     }
 
-    /// @notice allows to deposit the underlying token into the staking contract
-    /// @dev mints an amount of overlying tokens according to the stake in the pool
-    /// @param amount amount of underlying token to deposit
-    function deposit(uint256 amount) public {
+    function deposit(uint256 amount) public returns (uint256) {
         uint256 share = 0;
         if (totalSupply() > 0) {
             share = (totalSupply() * amount) / token.balanceOf(address(this));
@@ -59,12 +46,9 @@ contract Staking is ERC20 {
         token.transferFrom(_msgSender(), address(this), amount);
         _mint(_msgSender(), share);
         emit Deposit(_msgSender(), amount, share);
+        return share;
     }
 
-    /// @notice allows to withdraw the underlying token from the staking contract
-    /// @param amount of overlying tokens to withdraw
-    /// @param claim whether or not to claim ETH rewards
-    /// @return amount of underlying tokens withdrawn
     function withdraw(uint256 amount, bool claim) external returns (uint256) {
         if (claim) {
             claimRewards(_msgSender());
@@ -76,9 +60,7 @@ contract Staking is ERC20 {
         return withdrawnTokens;
     }
 
-    /// @notice allows to claim accumulated ETH rewards
-    /// @param to address to send rewards to
-    function claimRewards(address to) public {
+    function claimRewards(address to) public returns (uint256) {
         uint256 claimableRewards = claimableRewardsOf(_msgSender());
         if (claimableRewards > 0) {
             claimedRewards[_msgSender()] += claimableRewards;
@@ -86,6 +68,7 @@ contract Staking is ERC20 {
             require(success, "ETH_TRANSFER_FAILED");
             emit RewardClaimed(_msgSender(), to, claimableRewards);
         }
+        return claimableRewards;
     }
 
     /// @dev on mint, burn and transfer adjust corrections so that ETH rewards don't change on these events
@@ -110,7 +93,6 @@ contract Staking is ERC20 {
         }
     }
 
-    /// @return accumulated underlying token balance that can be withdrawn by the user
     function tokenBalance(address user) public view returns (uint256) {
         if (totalSupply() == 0) {
             return 0;
@@ -118,14 +100,12 @@ contract Staking is ERC20 {
         return (balanceOf(user) * token.balanceOf(address(this))) / totalSupply();
     }
 
-    /// @return total amount of ETH rewards earned by user
     function totalRewardsEarned(address user) public view returns (uint256) {
         int256 magnifiedRewards = (_magnifiedRewardPerShare * balanceOf(user)).toInt256Safe();
         uint256 correctedRewards = (magnifiedRewards + _magnifiedRewardCorrections[user]).toUint256Safe();
         return correctedRewards / MAGNITUDE;
     }
 
-    /// @return amount of ETH rewards that can be claimed by user
     function claimableRewardsOf(address user) public view returns (uint256) {
         return totalRewardsEarned(user) - claimedRewards[user];
     }

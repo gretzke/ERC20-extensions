@@ -49,11 +49,11 @@ describe('VestedToken', () => {
 
   describe('Register vested balances', async () => {
     it('should not vest tokens if sender is not vesting admin', async () => {
-      await expect(erc20.transfer(accounts[1].address, amount)).to.not.emit(erc20, 'VestedTokens');
+      await expect(erc20.transfer(accounts[1].address, amount)).to.not.emit(erc20, 'TokensVested');
     });
     it('should vest tokens for recipient if sender is vesting admin', async () => {
       await expect(erc20.connect(accounts[1]).transfer(accounts[2].address, amount))
-        .to.emit(erc20, 'VestedTokens')
+        .to.emit(erc20, 'TokensVested')
         .withArgs(1, accounts[2].address, amount);
     });
 
