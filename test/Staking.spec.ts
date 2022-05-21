@@ -3,8 +3,9 @@ import { ethers } from 'hardhat';
 import { expect } from 'chai';
 import { MockERC20, Staking } from '../typechain-types/';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import { contractName, deploy } from './util';
 
-describe('Staking', () => {
+describe(contractName('Staking'), () => {
   let staking: Staking;
   let erc20: MockERC20;
   let accounts: SignerWithAddress[];
@@ -14,10 +15,9 @@ describe('Staking', () => {
   before(async () => {
     accounts = await ethers.getSigners();
     owner = accounts[0];
-    const tokenFactory = await ethers.getContractFactory('MockERC20');
-    erc20 = (await tokenFactory.deploy()) as MockERC20;
-    const stakingFactory = await ethers.getContractFactory('Staking');
-    staking = (await stakingFactory.deploy('Staked Test Token', 'sTST', erc20.address)) as Staking;
+    erc20 = (await deploy('MockERC20', [])) as MockERC20;
+    staking = (await deploy('Staking', ['Staked Test Token', 'sTST', erc20.address])) as Staking;
+
     await erc20.transfer(accounts[1].address, amount);
     await erc20.transfer(accounts[2].address, amount);
     await erc20.transfer(accounts[3].address, amount.mul(2));

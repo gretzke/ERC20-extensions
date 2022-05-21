@@ -1,3 +1,6 @@
 hardhat.config.ts
 scripts
 test
+cache
+contracts/mock
+contracts-upgradeable/mock

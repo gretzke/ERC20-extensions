@@ -1,10 +1,10 @@
-require('dotenv').config();
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { expect } from 'chai';
-import { ethers, network, upgrades } from 'hardhat';
+import { contractName, deploy } from './util';
+import { ethers, network } from 'hardhat';
 import { MockVestedToken } from '../typechain-types';
 
-describe('VestedToken', () => {
+describe(contractName('VestedToken'), () => {
   let erc20: MockVestedToken;
   let accounts: SignerWithAddress[];
   let timestamp = 2000000000;
@@ -13,8 +13,7 @@ describe('VestedToken', () => {
 
   before(async () => {
     accounts = await ethers.getSigners();
-    const factory = await ethers.getContractFactory('MockVestedToken');
-    erc20 = (await factory.deploy()) as MockVestedToken;
+    erc20 = (await deploy('MockVestedToken', [])) as MockVestedToken;
   });
 
   describe('Create new vesting schedules', async () => {
@@ -49,14 +48,18 @@ describe('VestedToken', () => {
 
   describe('Register vested balances', async () => {
     it('should not vest tokens if sender is not vesting admin', async () => {
-      await expect(erc20.transfer(accounts[1].address, amount)).to.not.emit(erc20, 'TokensVested');
+      await expect(erc20.transfer(accounts[1].address, amount.mul(2))).to.not.emit(erc20, 'TokensVested');
     });
     it('should vest tokens for recipient if sender is vesting admin', async () => {
       await expect(erc20.connect(accounts[1]).transfer(accounts[2].address, amount))
         .to.emit(erc20, 'TokensVested')
         .withArgs(1, accounts[2].address, amount);
     });
-
+    it('should not be able to vest more tokens for user if user is already vested', async () => {
+      await expect(erc20.connect(accounts[1]).transfer(accounts[2].address, amount)).to.be.revertedWith(
+        'USER_ALREADY_VESTED'
+      );
+    });
     it('should lock tokens correctly', async () => {
       expect(await erc20.lockedTokens(accounts[2].address)).to.equal(amount);
       await expect(erc20.connect(accounts[2]).transfer(accounts[3].address, 1)).to.be.revertedWith('TOKENS_VESTED');

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import "../../interfaces/IVestedToken.sol";
 
 struct VestingPeriod {
@@ -15,7 +15,7 @@ struct VestedBalance {
     uint256 amount; // in wei
 }
 
-abstract contract VestedToken is IVestedToken, ERC20 {
+abstract contract VestedTokenUpgradeable is IVestedToken, ERC20Upgradeable {
     uint256 private _vestingCounter;
     mapping(uint256 => VestingPeriod) public override vestingPeriods;
     mapping(address => VestedBalance) public override vestedBalances;
@@ -69,4 +69,6 @@ abstract contract VestedToken is IVestedToken, ERC20 {
             require(balanceOf(from) >= lockedTokens(from), "TOKENS_VESTED");
         }
     }
+
+    uint256[50] private __gap;
 }

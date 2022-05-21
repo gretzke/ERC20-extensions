@@ -16,7 +16,7 @@ contract StakingPermit is IStakingPermit, Staking {
         uint256 amount,
         uint256 deadline,
         bytes memory signature
-    ) external returns (uint256) {
+    ) external virtual returns (uint256) {
         require(signature.length == 65);
         bytes32 r;
         bytes32 s;

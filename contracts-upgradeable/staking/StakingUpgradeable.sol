@@ -1,29 +1,30 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import {SafeMathInt, SafeMathUint} from "../lib/SafeMath.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import {SafeMathIntUpgradeable, SafeMathUintUpgradeable} from "../lib/SafeMathUpgradeable.sol";
 import "../../interfaces/IStaking.sol";
 
-contract Staking is ERC20, IStaking {
-    using SafeMathUint for uint256;
-    using SafeMathInt for int256;
+contract StakingUpgradeable is ERC20Upgradeable, IStaking {
+    using SafeMathUintUpgradeable for uint256;
+    using SafeMathIntUpgradeable for int256;
 
     uint256 private constant MAX_UINT256 = type(uint256).max;
     // allows to distribute small amounts of ETH correctly
     uint256 private constant MAGNITUDE = 10**40;
 
-    IERC20 token;
+    IERC20Upgradeable token;
     uint256 private _magnifiedRewardPerShare;
     mapping(address => int256) private _magnifiedRewardCorrections;
     mapping(address => uint256) public claimedRewards;
 
-    constructor(
-        string memory name,
-        string memory symbol,
+    function initialize(
+        string memory _name,
+        string memory _symbol,
         address underlyingToken
-    ) ERC20(name, symbol) {
-        token = IERC20(underlyingToken);
+    ) public virtual initializer {
+        __ERC20_init(_name, _symbol);
+        token = IERC20Upgradeable(underlyingToken);
     }
 
     /// @notice when the smart contract receives ETH, register payment
@@ -49,7 +50,7 @@ contract Staking is ERC20, IStaking {
         return share;
     }
 
-    function withdraw(uint256 amount, bool claim) external virtual returns (uint256) {
+    function withdraw(uint256 amount, bool claim) public virtual returns (uint256) {
         if (claim) {
             claimRewards(_msgSender());
         }
@@ -109,4 +110,6 @@ contract Staking is ERC20, IStaking {
     function claimableRewardsOf(address user) public view virtual returns (uint256) {
         return totalRewardsEarned(user) - claimedRewards[user];
     }
+
+    uint256[50] private __gap;
 }
