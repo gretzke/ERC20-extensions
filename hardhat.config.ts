@@ -10,7 +10,7 @@ import 'solidity-coverage';
 
 dotenv.config();
 
-const solidityVersion = '0.8.13';
+const solidityVersion = '0.8.14';
 const hardhatConfig = {
   gasPrice: 0,
   hardfork: 'berlin',
