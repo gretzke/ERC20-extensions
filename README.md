@@ -1,6 +1,7 @@
 # ERC20 Extensions
 
 [![CI Status](https://github.com/gretzke/ERC20-extensions/actions/workflows/tests.yml/badge.svg)](https://github.com/gretzke/ERC20-extensions/actions)
+[![npm](https://img.shields.io/npm/v/erc20-extensions.svg)](https://www.npmjs.com/package/erc20-extensions)
 [![License](https://img.shields.io/badge/License-AGPLv3-green.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
 This repository provides useful extensions to ERC20 tokens such as vesting, autoswap fees with UniSwap V2 or staking contracts.

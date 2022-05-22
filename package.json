@@ -1,8 +1,7 @@
 {
-  "name": "hardhat-template",
+  "name": "erc20-extensions",
   "version": "1.0.0",
   "description": "this is a hardhat template",
-  "main": "hardhat.config.ts",
   "scripts": {
     "compile": "hardhat compile && hardhat typechain",
     "compile:upgradeable": "UPGRADEABLE=true hardhat compile && hardhat typechain",
@@ -16,7 +15,9 @@
   "keywords": [
     "hardhat",
     "solidity",
-    "web3"
+    "web3",
+    "erc20",
+    "openzeppelin"
   ],
   "author": "Daniel Gretzke",
   "license": "AGPL-3.0-only",
@@ -57,5 +58,10 @@
   "dependencies": {
     "@openzeppelin/contracts": "^4.6.0",
     "@openzeppelin/contracts-upgradeable": "^4.6.0"
-  }
+  },
+  "files": [
+    "contracts",
+    "contracts-upgradeable",
+    "interfaces"
+  ]
 }
