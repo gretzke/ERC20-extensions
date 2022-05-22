@@ -3,6 +3,9 @@
 
 name: Tests
 
+env:
+  INFURA_TOKEN: ${{ secrets.INFURA_TOKEN }}
+
 on:
   push:
     branches: [main, dev, feature/**]
@@ -25,8 +28,18 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      - run: npm ci
-      - run: npm run compile
-      - run: npm run compile:upgradeable
-      - run: npm test
-      - run: npm run test:upgradeable
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Compile contracts
+        run: npm run compile
+
+      - name: Compile upgradeable contracts
+        run: npm run compile:upgradeable
+
+      - name: Test contracts
+        run: npm test
+
+      - name: Test upgradeable contracts
+        run: npm run test:upgradeable

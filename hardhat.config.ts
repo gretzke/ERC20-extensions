@@ -15,9 +15,10 @@ const upgradeable = process.env.UPGRADEABLE === 'true';
 const hardhatConfig = {
   gasPrice: 0,
   hardfork: 'berlin',
-  // forking: {
-  //   url: "https://mainnet.infura.io/v3/" + process.env.INFURA_TOKEN,
-  // },
+  forking: {
+    url: 'https://mainnet.infura.io/v3/' + process.env.INFURA_TOKEN,
+  },
+  chainId: 1,
 };
 
 const baseConfig: HardhatUserConfig = {
