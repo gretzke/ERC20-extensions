@@ -27,5 +27,6 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run compile
+      - run: npm run compile:upgradeable
       - run: npm test
-      - run: npm test:upgradeable
+      - run: npm run test:upgradeable
