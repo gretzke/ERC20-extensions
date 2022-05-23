@@ -1,7 +1,7 @@
 {
   "name": "erc20-extensions",
   "version": "1.0.0",
-  "description": "this is a hardhat template",
+  "description": "Useful extensions for ERC20 tokens",
   "scripts": {
     "compile": "hardhat compile && hardhat typechain",
     "compile:upgradeable": "UPGRADEABLE=true hardhat compile && hardhat typechain",
