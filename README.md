@@ -12,15 +12,18 @@ This repository provides useful extensions to ERC20 tokens such as vesting, auto
 On the project root, run:
 
 ```
-$ npm i                 # install dependencies
-$ npm run compile       # compile contracts and generate typechain
-$ npm test              # run tests
+$ npm i                         # install dependencies
+$ npm run compile               # compile contracts and generate typechain
+$ npm run compile:upgradeable   # compile contracts and generate typechain for upgradeable contracts
+$ npm test                      # run tests
+$ npm test:upgradeable          # run tests for upgradeable contracts
 ```
 
 optional:
 
 ```
-$ npm run coverage      # run test coverage tool
+$ npm run coverage              # run test coverage tool
+$ npm run coverage:upgradeable  # run test coverage tool
 ```
 
 ## Licensing
