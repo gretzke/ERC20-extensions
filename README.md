@@ -23,7 +23,7 @@ optional:
 
 ```
 $ npm run coverage              # run test coverage tool
-$ npm run coverage:upgradeable  # run test coverage tool
+$ npm run coverage:upgradeable  # run test coverage tool for upgradeable contracts
 ```
 
 ## Licensing
