@@ -1,7 +1,12 @@
 {
   "name": "erc20-extensions",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Useful extensions for ERC20 tokens",
+  "homepage": "https://github.com/gretzke/ERC20-extensions#readme",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/gretzke/ERC20-extensions.git"
+  },
   "scripts": {
     "compile": "hardhat compile && hardhat typechain",
     "compile:upgradeable": "UPGRADEABLE=true hardhat compile && hardhat typechain",
