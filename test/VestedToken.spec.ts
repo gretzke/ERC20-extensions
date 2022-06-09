@@ -198,4 +198,31 @@ describe(contractName('VestedToken'), () => {
       });
     });
   });
+
+  describe('Recipient whitelist', async () => {
+    before(async () => {
+      await erc20.transfer(accounts[8].address, 1);
+      timestamp = 2300000000;
+      await erc20.setupVestingSchedule(timestamp + week, 10000, 0, accounts[8].address);
+      await erc20.connect(accounts[8]).transfer(accounts[9].address, 1);
+      await network.provider.send('evm_setNextBlockTimestamp', [timestamp]);
+      await network.provider.send('evm_mine');
+    });
+
+    it('should not be able to send tokens', async () => {
+      await expect(erc20.connect(accounts[9]).transfer(accounts[10].address, 1)).to.be.revertedWith('TOKENS_VESTED');
+    });
+
+    it('should be able to transfer tokens to whitelisted recipient', async () => {
+      await erc20.whitelistRecipient(accounts[10].address);
+      await expect(erc20.connect(accounts[9]).transfer(accounts[10].address, 1))
+        .to.emit(erc20, 'Transfer')
+        .withArgs(accounts[9].address, accounts[10].address, 1);
+    });
+
+    it('tokens should still be vested when returned', async () => {
+      await erc20.connect(accounts[10]).transfer(accounts[9].address, 1);
+      await expect(erc20.connect(accounts[9]).transfer(accounts[11].address, 1)).to.be.revertedWith('TOKENS_VESTED');
+    });
+  });
 });

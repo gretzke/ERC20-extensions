@@ -19,4 +19,8 @@ contract MockVestedTokenUpgradeable is VestedTokenUpgradeable, OwnableUpgradeabl
     ) external onlyOwner {
         _setupSchedule(cliff, cliffAmount, duration, vestingAdmin);
     }
+
+    function whitelistRecipient(address recipient) external onlyOwner {
+        recipientWhitelist[recipient] = true;
+    }
 }
