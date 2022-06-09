@@ -6,13 +6,7 @@ import "./StakingUpgradeable.sol";
 import "../../interfaces/IStakingPermit.sol";
 
 contract StakingPermitUpgradeable is IStakingPermit, StakingUpgradeable {
-    function initialize(
-        string memory _name,
-        string memory _symbol,
-        address _underlyingToken
-    ) public virtual override initializer {
-        super.initialize(_name, _symbol, _underlyingToken);
-    }
+    function __StakingPermit_init() internal onlyInitializing {}
 
     function depositWithPermit(
         uint256 amount,

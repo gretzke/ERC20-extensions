@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
-import {SafeMathIntUpgradeable, SafeMathUintUpgradeable} from "../lib/SafeMathUpgradeable.sol";
+import "../lib/SafeMathUpgradeable.sol";
 import "../../interfaces/IStaking.sol";
 
 contract StakingUpgradeable is ERC20Upgradeable, IStaking {
@@ -18,11 +18,11 @@ contract StakingUpgradeable is ERC20Upgradeable, IStaking {
     mapping(address => int256) private _magnifiedRewardCorrections;
     mapping(address => uint256) public claimedRewards;
 
-    function initialize(
+    function __Staking_init(
         string memory _name,
         string memory _symbol,
         address underlyingToken
-    ) public virtual initializer {
+    ) internal onlyInitializing {
         __ERC20_init(_name, _symbol);
         token = IERC20Upgradeable(underlyingToken);
     }
@@ -88,6 +88,7 @@ contract StakingUpgradeable is ERC20Upgradeable, IStaking {
             _magnifiedRewardCorrections[from] += (_magnifiedRewardPerShare * amount).toInt256Safe();
         } else {
             // transfer
+            require(_isTransferable(), "TRANSFER_FORBIDDEN");
             int256 magnifiedCorrection = (_magnifiedRewardPerShare * amount).toInt256Safe();
             _magnifiedRewardCorrections[from] += (magnifiedCorrection);
             _magnifiedRewardCorrections[to] -= (magnifiedCorrection);
@@ -109,6 +110,10 @@ contract StakingUpgradeable is ERC20Upgradeable, IStaking {
 
     function claimableRewardsOf(address user) public view virtual returns (uint256) {
         return totalRewardsEarned(user) - claimedRewards[user];
+    }
+
+    function _isTransferable() internal view virtual returns (bool) {
+        return false;
     }
 
     uint256[50] private __gap;
