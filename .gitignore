@@ -10,7 +10,5 @@ artifacts
 
 #openzeppelin
 .openzeppelin/*
-!.openzeppelin/unknown-137.json
-!.openzeppelin/mainnet.json
 
 .DS_Store

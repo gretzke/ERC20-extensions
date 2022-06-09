@@ -1,12 +1,12 @@
 require('dotenv').config();
-import { ethers } from 'hardhat';
-import { expect } from 'chai';
-import { MockERC20, Staking } from '../typechain-types/';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import { expect } from 'chai';
+import { ethers } from 'hardhat';
+import { MockERC20, MockStaking } from '../typechain-types/';
 import { contractName, deploy } from './util';
 
 describe(contractName('Staking'), () => {
-  let staking: Staking;
+  let staking: MockStaking;
   let erc20: MockERC20;
   let accounts: SignerWithAddress[];
   let owner: SignerWithAddress;
@@ -16,7 +16,7 @@ describe(contractName('Staking'), () => {
     accounts = await ethers.getSigners();
     owner = accounts[0];
     erc20 = (await deploy('MockERC20', [])) as MockERC20;
-    staking = (await deploy('Staking', ['Staked Test Token', 'sTST', erc20.address])) as Staking;
+    staking = (await deploy('MockStaking', [erc20.address])) as MockStaking;
 
     await erc20.transfer(accounts[1].address, amount);
     await erc20.transfer(accounts[2].address, amount);
@@ -63,6 +63,7 @@ describe(contractName('Staking'), () => {
       expect(await staking.tokenBalance(accounts[0].address)).to.equal(amount.mul(3));
     });
   });
+
   describe('Rewards', async () => {
     it('should reflect withdrawable balance accurately after rewards have been sent to contract', async () => {
       await erc20.transfer(staking.address, amount.mul(4));
@@ -86,6 +87,7 @@ describe(contractName('Staking'), () => {
       expect(await staking.tokenBalance(accounts[2].address)).to.equal(amount.mul(2));
     });
   });
+
   describe('Unstake', async () => {
     before(async () => {
       await erc20.connect(accounts[3]).approve(staking.address, amount.mul(2));
@@ -101,6 +103,7 @@ describe(contractName('Staking'), () => {
       expect(await staking.tokenBalance(accounts[0].address)).to.equal(amount.mul(8));
     });
   });
+
   describe('Rewards in ETH', async () => {
     before(async () => {
       await erc20.transfer(accounts[4].address, amount.mul(10));
@@ -264,6 +267,20 @@ describe(contractName('Staking'), () => {
         .to.emit(staking, 'RewardClaimed')
         .withArgs(accounts[3].address, accounts[3].address, claimableRewards);
       expect(balance.add(claimableRewards)).to.equal(await ethers.provider.getBalance(accounts[3].address));
+    });
+  });
+
+  describe('Overlying token transfers', async () => {
+    it('should be able to transfer overlying tokens', async () => {
+      await expect(staking.connect(accounts[2]).transfer(accounts[3].address, 1))
+        .to.emit(staking, 'Transfer')
+        .withArgs(accounts[2].address, accounts[3].address, 1);
+    });
+    it('should not be able to transfer overlying tokens', async () => {
+      await staking.setTransferable(false);
+      await expect(staking.connect(accounts[2]).transfer(accounts[3].address, 1)).to.be.revertedWith(
+        'TRANSFER_FORBIDDEN'
+      );
     });
   });
 });
