@@ -1,12 +1,12 @@
 require('dotenv').config();
-import { ethers } from 'hardhat';
-import { expect } from 'chai';
-import { MockERC20, StakingPermit } from '../typechain-types';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import { expect } from 'chai';
+import { ethers } from 'hardhat';
+import { MockERC20, MockStaking } from '../typechain-types';
 import { contractName, deploy } from './util';
 
 describe(contractName('StakingPermit'), () => {
-  let staking: StakingPermit;
+  let staking: MockStaking;
   let erc20: MockERC20;
   let accounts: SignerWithAddress[];
   const unix2100 = '4102441200';
@@ -21,7 +21,7 @@ describe(contractName('StakingPermit'), () => {
   before(async () => {
     accounts = await ethers.getSigners();
     erc20 = (await deploy('MockERC20', [])) as MockERC20;
-    staking = (await deploy('StakingPermit', ['Staked Test Token', 'sTST', erc20.address])) as StakingPermit;
+    staking = (await deploy('MockStaking', [erc20.address])) as MockStaking;
 
     domain = {
       name: 'Test Token',

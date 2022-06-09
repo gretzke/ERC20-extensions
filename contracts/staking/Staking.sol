@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import {SafeMathInt, SafeMathUint} from "../lib/SafeMath.sol";
+import "../lib/SafeMath.sol";
 import "../../interfaces/IStaking.sol";
 
 contract Staking is ERC20, IStaking {
@@ -87,6 +87,7 @@ contract Staking is ERC20, IStaking {
             _magnifiedRewardCorrections[from] += (_magnifiedRewardPerShare * amount).toInt256Safe();
         } else {
             // transfer
+            require(_isTransferable(), "TRANSFER_FORBIDDEN");
             int256 magnifiedCorrection = (_magnifiedRewardPerShare * amount).toInt256Safe();
             _magnifiedRewardCorrections[from] += (magnifiedCorrection);
             _magnifiedRewardCorrections[to] -= (magnifiedCorrection);
@@ -108,5 +109,9 @@ contract Staking is ERC20, IStaking {
 
     function claimableRewardsOf(address user) public view virtual returns (uint256) {
         return totalRewardsEarned(user) - claimedRewards[user];
+    }
+
+    function _isTransferable() internal view virtual returns (bool) {
+        return false;
     }
 }
