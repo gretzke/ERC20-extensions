@@ -20,6 +20,7 @@ abstract contract VestedToken is IVestedToken, ERC20 {
     mapping(uint256 => VestingPeriod) public override vestingPeriods;
     mapping(address => VestedBalance) public override vestedBalances;
     mapping(address => uint256) public vestingAdmins;
+    mapping(address => bool) public recipientWhitelist;
 
     function lockedTokens(address account) public view virtual returns (uint256) {
         VestedBalance storage vestingBalance = vestedBalances[account];
@@ -66,7 +67,9 @@ abstract contract VestedToken is IVestedToken, ERC20 {
             vestingBalance.amount = amount;
             emit TokensVested(id, to, amount);
         } else {
-            require(balanceOf(from) >= lockedTokens(from), "TOKENS_VESTED");
+            if (!recipientWhitelist[to]) {
+                require(balanceOf(from) >= lockedTokens(from), "TOKENS_VESTED");
+            }
         }
     }
 }

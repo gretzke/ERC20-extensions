@@ -17,4 +17,8 @@ contract MockVestedToken is VestedToken, Ownable {
     ) external onlyOwner {
         _setupSchedule(cliff, cliffAmount, duration, vestingAdmin);
     }
+
+    function whitelistRecipient(address recipient) external onlyOwner {
+        recipientWhitelist[recipient] = true;
+    }
 }
