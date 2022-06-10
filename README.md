@@ -7,6 +7,12 @@
 
 This repository provides useful extensions to ERC20 tokens such as vesting, autoswap fees with UniSwap V2 or staking contracts.
 
+## Installation
+
+```
+$ npm i erc20-extensions
+```
+
 ## Build and Test
 
 On the project root, run:
