@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
+// ERC20 Extensions v1.1.1
 pragma solidity ^0.8.0;
 
 /// @title Vesting functionality for ERC20 tokens

@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
+// ERC20 Extensions v1.1.1
 pragma solidity ^0.8.0;
 
 import "../../interfaces/IAutoSwap.sol";
 import "../../interfaces/IUniswapV2Router.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract AutoSwap is ERC20Permit, IAutoSwap {
+abstract contract AutoSwap is ERC20, IAutoSwap {
     address public immutable WETH;
     address public immutable uniswapPair;
     mapping(address => bool) public isExcludedFromFee;
@@ -17,7 +18,7 @@ contract AutoSwap is ERC20Permit, IAutoSwap {
         // Do nothing
     }
 
-    constructor(string memory _name, string memory _symbol) ERC20(_name, _symbol) ERC20Permit(_name) {
+    constructor() {
         // calculate future Uniswap V2 pair address
         address uniswapFactory = router().factory();
         WETH = router().WETH();

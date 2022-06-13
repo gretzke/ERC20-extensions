@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
+// ERC20 Extensions v1.1.1
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import "../../interfaces/IVestedToken.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 
 struct VestingPeriod {
     uint256 cliffTimestamp;
