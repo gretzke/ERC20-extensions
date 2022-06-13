@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+# v1.1.1
+
+## (2022-06-13)
+
+### Fixes
+
+- Make autoswap contract abstract
+- All contracts now default to the standard ERC20 interface (EIP 2612 support can be added manually)
+- Add version comment to source code files
+
 # v1.1.0
 
 ## (2022-06-09)
