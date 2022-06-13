@@ -3,9 +3,9 @@ pragma solidity ^0.8.0;
 
 import "../../interfaces/IAutoSwap.sol";
 import "../../interfaces/IUniswapV2Router.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/draft-ERC20PermitUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 
-contract AutoSwapUpgradeable is ERC20PermitUpgradeable, IAutoSwap {
+abstract contract AutoSwapUpgradeable is ERC20Upgradeable, IAutoSwap {
     address public WETH;
     address public uniswapPair;
     mapping(address => bool) public isExcludedFromFee;
@@ -17,10 +17,7 @@ contract AutoSwapUpgradeable is ERC20PermitUpgradeable, IAutoSwap {
         // Do nothing
     }
 
-    function __AutoSwap_init(string memory _name, string memory _symbol) internal onlyInitializing {
-        __ERC20_init(_name, _symbol);
-        __ERC20Permit_init(_name);
-
+    function __AutoSwap_init() internal onlyInitializing {
         // calculate future Uniswap V2 pair address
         address uniswapFactory = router().factory();
         address _WETH = router().WETH();

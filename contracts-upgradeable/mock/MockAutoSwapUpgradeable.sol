@@ -9,7 +9,8 @@ contract MockAutoSwapUpgradeable is AutoSwapUpgradeable, OwnableUpgradeable {
 
     function initialize(address _beneficiary) external initializer {
         __Ownable_init();
-        __AutoSwap_init("Test Token", "TST");
+        __ERC20_init("Test Token", "TST");
+        __AutoSwap_init();
         _mint(_msgSender(), 1000000000 ether);
         beneficiary = _beneficiary;
     }

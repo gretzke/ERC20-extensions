@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract MockAutoSwap is AutoSwap, Ownable {
     address beneficiary;
 
-    constructor(address _beneficiary) AutoSwap("Test Token", "TST") {
+    constructor(address _beneficiary) ERC20("Test Token", "TST") {
         _mint(_msgSender(), 1000000000 ether);
         beneficiary = _beneficiary;
     }
