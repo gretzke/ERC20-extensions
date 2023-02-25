@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// ERC20 Extensions v1.1.1
+// ERC20 Extensions v1.1.2
 pragma solidity ^0.8.0;
 
 /// @notice see Staking.sol
@@ -10,9 +10,5 @@ interface IStakingPermit {
     /// @param deadline until the signature is valid
     /// @param signature permit signature
     /// @return amount of overlying tokens received
-    function depositWithPermit(
-        uint256 amount,
-        uint256 deadline,
-        bytes memory signature
-    ) external returns (uint256);
+    function depositWithPermit(uint256 amount, uint256 deadline, bytes memory signature) external returns (uint256);
 }

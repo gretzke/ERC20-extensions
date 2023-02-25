@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// ERC20 Extensions v1.1.1
+// ERC20 Extensions v1.1.2
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
@@ -12,7 +12,7 @@ contract StakingUpgradeable is ERC20Upgradeable, IStaking {
 
     uint256 private constant MAX_UINT256 = type(uint256).max;
     // allows to distribute small amounts of ETH correctly
-    uint256 private constant MAGNITUDE = 10**40;
+    uint256 private constant MAGNITUDE = 10 ** 40;
 
     IERC20Upgradeable token;
     uint256 private _magnifiedRewardPerShare;
@@ -40,12 +40,16 @@ contract StakingUpgradeable is ERC20Upgradeable, IStaking {
 
     function deposit(uint256 amount) public virtual returns (uint256) {
         uint256 share = 0;
+        uint256 balanceBefore = token.balanceOf(address(this));
+        token.transferFrom(_msgSender(), address(this), amount);
+        uint256 balanceAfter = token.balanceOf(address(this));
+        // check actual amount received to support fee on transfer tokens
+        amount = balanceAfter - balanceBefore;
         if (totalSupply() > 0) {
-            share = (totalSupply() * amount) / token.balanceOf(address(this));
+            share = (totalSupply() * amount) / balanceBefore;
         } else {
             share = amount;
         }
-        token.transferFrom(_msgSender(), address(this), amount);
         _mint(_msgSender(), share);
         emit Deposit(_msgSender(), amount, share);
         return share;
@@ -74,11 +78,7 @@ contract StakingUpgradeable is ERC20Upgradeable, IStaking {
     }
 
     /// @dev on mint, burn and transfer adjust corrections so that ETH rewards don't change on these events
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 amount
-    ) internal virtual override {
+    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override {
         super._beforeTokenTransfer(from, to, amount);
 
         if (from == address(0)) {

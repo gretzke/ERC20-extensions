@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+# v1.1.2
+
+## (2023-02-26)
+
+### Features
+
+- Add support for fee on transfer tokens to the staking contracts
+
 # v1.1.1
 
 ## (2022-06-13)
