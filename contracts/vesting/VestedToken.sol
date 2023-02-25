@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// ERC20 Extensions v1.1.1
+// ERC20 Extensions v1.1.2
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -54,11 +54,7 @@ abstract contract VestedToken is IVestedToken, ERC20 {
         emit VestingScheduleAdded(vestingId, cliff, cliffAmount, duration);
     }
 
-    function _afterTokenTransfer(
-        address from,
-        address to,
-        uint256 amount
-    ) internal virtual override {
+    function _afterTokenTransfer(address from, address to, uint256 amount) internal virtual override {
         VestedBalance storage vestingBalance = vestedBalances[to];
         uint256 id = vestingAdmins[from];
         if (id != 0) {

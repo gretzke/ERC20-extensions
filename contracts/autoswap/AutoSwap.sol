@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// ERC20 Extensions v1.1.1
+// ERC20 Extensions v1.1.2
 pragma solidity ^0.8.0;
 
 import "../../interfaces/IAutoSwap.sol";
@@ -45,11 +45,7 @@ abstract contract AutoSwap is ERC20, IAutoSwap {
         _setExcludeFromFee(address(this), true);
     }
 
-    function _transfer(
-        address sender,
-        address recipient,
-        uint256 amount
-    ) internal override {
+    function _transfer(address sender, address recipient, uint256 amount) internal override {
         // add liquidity
         // user => pair, msg.sender = router
 
@@ -96,7 +92,7 @@ abstract contract AutoSwap is ERC20, IAutoSwap {
     function _swapTokensForEth(address to) internal virtual {
         uint256 tokenAmount = balanceOf(address(this));
         // only swap if more than 1e-5 tokens are in contract to avoid "UniswapV2: K" error
-        if (tokenAmount > 10**13) {
+        if (tokenAmount > 10 ** 13) {
             address[] memory path = new address[](2);
             path[0] = address(this);
             path[1] = WETH;

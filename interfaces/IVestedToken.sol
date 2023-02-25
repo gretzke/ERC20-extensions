@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// ERC20 Extensions v1.1.1
+// ERC20 Extensions v1.1.2
 pragma solidity ^0.8.0;
 
 /// @title Vesting functionality for ERC20 tokens
@@ -14,14 +14,9 @@ interface IVestedToken {
     event VestingScheduleAdded(uint256 indexed vestingId, uint256 cliff, uint256 cliffAmount, uint256 duration);
     event TokensVested(uint256 indexed vestingId, address indexed account, uint256 amount);
 
-    function vestingPeriods(uint256 id)
-        external
-        view
-        returns (
-            uint256 cliffTimestamp,
-            uint256 cliffAmount,
-            uint256 duration
-        );
+    function vestingPeriods(
+        uint256 id
+    ) external view returns (uint256 cliffTimestamp, uint256 cliffAmount, uint256 duration);
 
     function vestedBalances(address account) external view returns (uint256 vestingId, uint256 amount);
 
