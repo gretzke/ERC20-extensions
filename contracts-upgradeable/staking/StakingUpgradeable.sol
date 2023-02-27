@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// ERC20 Extensions v1.1.2
+// ERC20 Extensions v1.1.3
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
@@ -14,7 +14,7 @@ contract StakingUpgradeable is ERC20Upgradeable, IStaking {
     // allows to distribute small amounts of ETH correctly
     uint256 private constant MAGNITUDE = 10 ** 40;
 
-    IERC20Upgradeable token;
+    IERC20Upgradeable public token;
     uint256 private _magnifiedRewardPerShare;
     mapping(address => int256) private _magnifiedRewardCorrections;
     mapping(address => uint256) public claimedRewards;
