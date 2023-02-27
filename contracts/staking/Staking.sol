@@ -14,12 +14,12 @@ contract Staking is ERC20, IStaking {
     // allows to distribute small amounts of ETH correctly
     uint256 private constant MAGNITUDE = 10 ** 40;
 
-    IERC20 token;
+    IERC20 public token;
     uint256 private _magnifiedRewardPerShare;
     mapping(address => int256) private _magnifiedRewardCorrections;
     mapping(address => uint256) public claimedRewards;
 
-    constructor(string memory name, string memory symbol, address underlyingToken) ERC20(name, symbol) {
+    constructor(string memory _name, string memory _symbol, address underlyingToken) ERC20(_name, _symbol) {
         token = IERC20(underlyingToken);
     }
 

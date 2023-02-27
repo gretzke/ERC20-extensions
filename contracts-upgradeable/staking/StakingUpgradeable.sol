@@ -14,7 +14,7 @@ contract StakingUpgradeable is ERC20Upgradeable, IStaking {
     // allows to distribute small amounts of ETH correctly
     uint256 private constant MAGNITUDE = 10 ** 40;
 
-    IERC20Upgradeable token;
+    IERC20Upgradeable public token;
     uint256 private _magnifiedRewardPerShare;
     mapping(address => int256) private _magnifiedRewardCorrections;
     mapping(address => uint256) public claimedRewards;
