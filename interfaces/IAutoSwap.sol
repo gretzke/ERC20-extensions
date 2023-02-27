@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// ERC20 Extensions v1.1.2
+// ERC20 Extensions v1.1.3
 pragma solidity ^0.8.0;
 
 interface IAutoSwap {

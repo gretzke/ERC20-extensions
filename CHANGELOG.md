@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+# v1.1.3
+
+## (2023-02-27)
+
+### Fixes
+
+- Make underlying token variable public in staking contracts
+
 # v1.1.2
 
 ## (2023-02-26)

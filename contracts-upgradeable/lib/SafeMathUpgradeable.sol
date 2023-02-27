@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// ERC20 Extensions v1.1.2
+// ERC20 Extensions v1.1.3
 pragma solidity ^0.8.0;
 
 library SafeMathIntUpgradeable {
